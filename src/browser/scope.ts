@@ -153,9 +153,13 @@ const conflictingNames = new Set([
 ])
 
 // Filter Lucide icons to avoid conflicts with Recharts components
+// Icons are forwardRef objects (typeof "object" with $$typeof), not plain functions
 const LucideIcons = Object.fromEntries(
   Object.entries(AllLucideIcons).filter(
-    ([key]) => !conflictingNames.has(key) && typeof AllLucideIcons[key as keyof typeof AllLucideIcons] === "function"
+    ([key, val]) => !conflictingNames.has(key) && val != null && (
+      typeof val === "function" ||
+      (typeof val === "object" && (val as any).$$typeof != null)
+    )
   )
 )
 

@@ -264,8 +264,21 @@ export function getScopeIdentifiers(): string[] {
   // shadcn/ui components
   const shadcnIdentifiers = [
     "Button", "Card", "CardHeader", "CardTitle", "CardDescription", "CardContent", "CardFooter",
-    "Input", "Label",
-    "Table", "TableHeader", "TableBody", "TableFooter", "TableHead", "TableRow", "TableCell", "TableCaption"
+    "Input", "Textarea", "Label",
+    "Table", "TableHeader", "TableBody", "TableFooter", "TableHead", "TableRow", "TableCell", "TableCaption",
+    "Dialog", "DialogPortal", "DialogOverlay", "DialogClose", "DialogTrigger", "DialogContent",
+    "DialogHeader", "DialogFooter", "DialogTitle", "DialogDescription",
+    "Sheet", "SheetPortal", "SheetOverlay", "SheetTrigger", "SheetClose", "SheetContent",
+    "SheetHeader", "SheetFooter", "SheetTitle", "SheetDescription",
+    "Tabs", "TabsList", "TabsTrigger", "TabsContent",
+    "Accordion", "AccordionItem", "AccordionTrigger", "AccordionContent",
+    "Select", "SelectGroup", "SelectValue", "SelectTrigger", "SelectContent",
+    "SelectLabel", "SelectItem", "SelectSeparator",
+    "Checkbox", "RadioGroup", "RadioGroupItem", "Switch", "Slider",
+    "Badge", "Avatar", "AvatarImage", "AvatarFallback",
+    "Progress", "Skeleton",
+    "Alert", "AlertTitle", "AlertDescription",
+    "Tooltip", "TooltipTrigger", "TooltipContent", "TooltipProvider"
   ]
 
   // Recharts
@@ -280,6 +293,24 @@ export function getScopeIdentifiers(): string[] {
   // Utilities and markdown
   const utilIdentifiers = ["cn", "format", "canvasEmit", "useCanvasState", "Markdown", "remarkGfm"]
 
+  // Lucide icons - dynamically extract from the package to stay in sync with scope.ts
+  let lucideIdentifiers: string[] = []
+  try {
+    const conflicting = new Set([
+      "Table", "LineChart", "BarChart", "PieChart", "AreaChart", "Radar",
+      "ScatterChart", "Brush", "default", "createLucideIcon", "icons"
+    ])
+    const lucide = require("lucide-react")
+    lucideIdentifiers = Object.keys(lucide).filter(
+      (key: string) => !conflicting.has(key) && lucide[key] != null && (
+        typeof lucide[key] === "function" ||
+        (typeof lucide[key] === "object" && lucide[key].$$typeof != null)
+      )
+    )
+  } catch {
+    // Lucide not available server-side; skip
+  }
+
   // Dynamic components from skill directories
   const dynamicComponents = Array.from(components.keys())
 
@@ -288,6 +319,7 @@ export function getScopeIdentifiers(): string[] {
     ...shadcnIdentifiers,
     ...rechartsIdentifiers,
     ...utilIdentifiers,
+    ...lucideIdentifiers,
     ...dynamicComponents
   ]
 }
